@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,21 +27,8 @@ class _MessagesState extends State<Messages> {
   String _idDestiny;
   Firestore db = Firestore.instance;
 
-  List<String> listMessages = [
-    "Olá meu amigo, tudo bem?",
-    "Tudo ótimo!!! e contigo?",
-    "Estou muito bem!! você vai na corrida de sábado?",
-    "Não sei ainda :(",
-    "Pq se você fosse, queria ver se posso ir com você...",
-    "Posso te confirma no sábado? vou ver isso",
-    "Opa! tranquilo",
-    "Excelente!!",
-    "Estou animado para essa corrida, não vejo a hora de chegar! ;) ",
-    "Vai estar bem legal!! muita gente",
-    "vai sim!",
-    "Lembra do carro que tinha te falado",
-    "Que legal!!"
-  ];
+  final _controller = StreamController<QuerySnapshot>.broadcast();
+  ScrollController _scrollController = ScrollController();
 
   _sendMessage() {
     String textMessage = _controllerMessage.text;
@@ -142,6 +130,8 @@ class _MessagesState extends State<Messages> {
     FirebaseUser loggedUser = await auth.currentUser();
     _userId = loggedUser.uid;
     _idDestiny = widget.contact.idUser;
+
+    _addChatListener();
   }
 
   @override
@@ -149,6 +139,23 @@ class _MessagesState extends State<Messages> {
     _getUserData();
     super.initState();
   }
+
+  Stream<QuerySnapshot> _addChatListener(){
+
+    final stream = db.collection("messages")
+        .document(_userId)
+        .collection(_idDestiny)
+        .snapshots();
+
+        stream.listen((data){
+        _controller.add( data );
+        Timer(Duration(seconds: 1), (){
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+          } );
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -200,11 +207,7 @@ class _MessagesState extends State<Messages> {
     );
 
     var stream = StreamBuilder(
-      stream: db
-          .collection("messages")
-          .document(_userId)
-          .collection(_idDestiny)
-          .snapshots(),
+      stream: _controller.stream,
       // ignore: missing_return
       builder: (context, snapshot) {
         // ignore: missing_return
