@@ -7,6 +7,7 @@ class Message {
 
   //Define o tipo da mensagem, que pode ser "texto" ou "imagem"
   String _type;
+  String _date;
 
 
   Message();
@@ -17,9 +18,16 @@ class Message {
       "message": this.message,
       "urlImage": this.urlImage,
       "type": this.type,
+      "date": this.date,
     };
 
     return map;
+  }
+
+  String get date => _date;
+
+  set date(String value) {
+    _date = value;
   }
 
   String get type => _type;

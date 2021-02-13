@@ -37,12 +37,13 @@ class _MessagesState extends State<Messages> {
       messages.idUser = _userId;
       messages.message = textMessage;
       messages.urlImage = "";
+      messages.date = Timestamp.now().toString();
       messages.type = "text";
 
       _saveMessage(_userId, _idDestiny, messages);
       _saveMessage(_idDestiny, _userId, messages);
 
-      _saveChat( messages );
+      _saveChat(messages);
     }
   }
 
@@ -57,8 +58,7 @@ class _MessagesState extends State<Messages> {
     _controllerMessage.clear();
   }
 
-  _saveChat(Message msg){
-
+  _saveChat(Message msg) {
     //Salvar conversa remetente
     Chat cSender = Chat();
     cSender.idSender = _userId;
@@ -119,6 +119,7 @@ class _MessagesState extends State<Messages> {
     messages.idUser = _userId;
     messages.message = "";
     messages.urlImage = url;
+    messages.date = Timestamp.now().toString();
     messages.type = "image";
 
     _saveMessage(_userId, _idDestiny, messages);
@@ -140,22 +141,21 @@ class _MessagesState extends State<Messages> {
     super.initState();
   }
 
-  Stream<QuerySnapshot> _addChatListener(){
-
-    final stream = db.collection("messages")
+  Stream<QuerySnapshot> _addChatListener() {
+    final stream = db
+        .collection("messages")
         .document(_userId)
         .collection(_idDestiny)
+        .orderBy("date", descending: false)
         .snapshots();
 
-        stream.listen((data){
-        _controller.add( data );
-        Timer(Duration(seconds: 1), (){
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-          } );
+    stream.listen((data) {
+      _controller.add(data);
+      Timer(Duration(seconds: 1), () {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
     });
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -177,31 +177,29 @@ class _MessagesState extends State<Messages> {
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32)
-                    ),
-                    prefixIcon:
-                    _uploadingImage
+                        borderRadius: BorderRadius.circular(32)),
+                    prefixIcon: _uploadingImage
                         ? CircularProgressIndicator()
-                        : IconButton(icon: Icon(Icons.camera_alt),
-                        onPressed: _sendImage)
-                ),
+                        : IconButton(
+                            icon: Icon(Icons.camera_alt),
+                            onPressed: _sendImage)),
               ),
             ),
           ),
           Platform.isIOS
               ? CupertinoButton(
-            child: Text("send"),
-            onPressed: _sendMessage,
-          )
+                  child: Text("send"),
+                  onPressed: _sendMessage,
+                )
               : FloatingActionButton(
-            backgroundColor: Color(0xff075E54),
-            child: Icon(
-              Icons.send,
-              color: Colors.white,
-            ),
-            mini: true,
-            onPressed: _sendMessage,
-          )
+                  backgroundColor: Color(0xff075E54),
+                  child: Icon(
+                    Icons.send,
+                    color: Colors.white,
+                  ),
+                  mini: true,
+                  onPressed: _sendMessage,
+                )
         ],
       ),
     );
@@ -262,8 +260,7 @@ class _MessagesState extends State<Messages> {
                             decoration: BoxDecoration(
                                 color: color,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(8))
-                            ),
+                                    BorderRadius.all(Radius.circular(8))),
                             child: item["type"] == "text"
                                 ? Text(
                                     item["message"],
@@ -303,9 +300,7 @@ class _MessagesState extends State<Messages> {
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("image/bg.png"),
-                fit: BoxFit.cover)
-        ),
+                image: AssetImage("image/bg.png"), fit: BoxFit.cover)),
         child: SafeArea(
             child: Container(
           padding: EdgeInsets.all(8),
