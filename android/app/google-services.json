@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "410471965477",
+    "project_id": "whatsapp-11893",
+    "storage_bucket": "whatsapp-11893.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410471965477:android:433c6ae4fc51dcdcd330cc",
+        "android_client_info": {
+          "package_name": "joao.prates.whatsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410471965477-c8va4rp6iqn4bdjtkq5sab189rt38gc4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0k01EbYjVhgcLE774DDANokoAFgNQDwE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410471965477-c8va4rp6iqn4bdjtkq5sab189rt38gc4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
